@@ -22,13 +22,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.devpredator.msentity.entity.Anime;
 import com.devpredator.msentity.entity.Personaje;
 import com.devpredator.mspersonaje.service.PersonajeService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author DevPredator
  *
  */
+@Api(tags = {"PERSONAJE'S MICROSERVICE"})
 @RestController
 @RequestMapping("/personaje")
 public class PersonajeController {
@@ -48,6 +57,13 @@ public class PersonajeController {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersonajeController.class); 
 	
+	@ApiOperation(value = "FIND PERSONAJES", notes = "Get the list of personajes", response = List.class)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Personajes founded successfully!"),
+		@ApiResponse(code = 401, message = "You don't have access to this endpoint!"),
+		@ApiResponse(code = 403, message = "Personaje's forbidden!"),
+		@ApiResponse(code = 404, message = "Personaje's resource not founded!")
+	})
 	@GetMapping("findPersonajes")
 	public ResponseEntity<?> findPersonajes() {
 		LOGGER.info("Run findPersonajes service.");
@@ -67,8 +83,17 @@ public class PersonajeController {
 		return ResponseEntity.ok(personajes);
 	}
 	
+	@ApiOperation(value = "FIND PERSONAJE BY ID", notes = "Get an personaje by its id", response = Personaje.class)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Personaje founded successfully!"),
+		@ApiResponse(code = 401, message = "You don't have access to this endpoint!"),
+		@ApiResponse(code = 403, message = "Personaje's forbidden!"),
+		@ApiResponse(code = 404, message = "Personaje's resource not founded!")
+	})
 	@GetMapping("findPersonajeById/{id}")
-	public ResponseEntity<?> findPersonajeById(@PathVariable("id") Long idPersonaje) {
+	public ResponseEntity<?> findPersonajeById(
+			@ApiParam(value = "The id of the personaje to find", name = "id", required = true, example = "Example: 10")
+			@PathVariable("id") Long idPersonaje) {
 		
 		Optional<Personaje> personajeOptional = this.personajeServiceImpl.findPersonajeById(idPersonaje);
 		
@@ -79,23 +104,53 @@ public class PersonajeController {
 		return ResponseEntity.ok(personajeOptional.get());
 	}
 	
+	@ApiOperation(value = "SAVE PERSONAJE", notes = "Store a new personaje in the database", response = Personaje.class)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Personaje request successfully!"),
+		@ApiResponse(code = 201, message = "Personaje created successfully!"),
+		@ApiResponse(code = 401, message = "You don't have access to this endpoint!"),
+		@ApiResponse(code = 403, message = "Personaje's forbidden!"),
+		@ApiResponse(code = 404, message = "Personaje's resource not founded!")
+	})
 	@PostMapping("savePersonaje")
-	public ResponseEntity<?> savePersonaje(@Valid @RequestBody Personaje personaje) {
+	public ResponseEntity<?> savePersonaje(
+			@ApiParam(value = "The object of the personaje to store", name = "personaje", required = true) 
+			@Valid @RequestBody Personaje personaje) {
 		
 		Personaje personajeSaved = this.personajeServiceImpl.savePersonaje(personaje);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(personajeSaved);
 	}
 	
+	@ApiOperation(value = "UPDATE PERSONAJE", notes = "Update an personaje in the database", response = Personaje.class)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Personaje request successfully!"),
+		@ApiResponse(code = 201, message = "Personaje updated successfully!"),
+		@ApiResponse(code = 401, message = "You don't have access to this endpoint!"),
+		@ApiResponse(code = 403, message = "Personaje's forbidden!"),
+		@ApiResponse(code = 404, message = "Personaje's resource not founded!")
+	})
 	@PutMapping("updatePersonaje")
-	public ResponseEntity<?> updatePersonaje(@RequestBody Personaje personaje) {
+	public ResponseEntity<?> updatePersonaje(
+			@ApiParam(value = "The object of the personaje to update", name = "personaje", required = true) 
+			@Valid @RequestBody Personaje personaje) {
 		Personaje personajeUpdated = this.personajeServiceImpl.savePersonaje(personaje);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(personajeUpdated);
 	}
 	
+	@ApiOperation(value = "DELETE PERSONAJE", notes = "Delete an personaje in the database", response = ResponseEntity.class)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Personaje deleted successfully!"),
+		@ApiResponse(code = 204, message = "No content for this personaje!"),
+		@ApiResponse(code = 401, message = "You don't have access to this endpoint!"),
+		@ApiResponse(code = 403, message = "Personaje's forbidden!"),
+		@ApiResponse(code = 404, message = "Personaje's resource not founded!")
+	})
 	@DeleteMapping("deletePersonajeById/{id}")
-	public ResponseEntity<?> deletePersonajeById(@PathVariable("id") Long idPersonaje) {
+	public ResponseEntity<?> deletePersonajeById(
+		@ApiParam(value = "The id of the personaje to delete", name = "id", required = true, example = "Example: 1")
+		@PathVariable("id") Long idPersonaje) {
 		
 		this.personajeServiceImpl.deletePersonajeById(idPersonaje);
 		
