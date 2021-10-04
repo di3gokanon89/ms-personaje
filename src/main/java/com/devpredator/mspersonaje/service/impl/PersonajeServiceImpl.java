@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.devpredator.msentity.entity.Personaje;
+import com.devpredator.mspersonaje.exceptions.PersonajeNullException;
 import com.devpredator.mspersonaje.repository.PersonajeRepository;
 import com.devpredator.mspersonaje.service.PersonajeService;
 
@@ -42,6 +43,11 @@ public class PersonajeServiceImpl implements PersonajeService {
 
 	@Override
 	public Personaje savePersonaje(Personaje personaje) {
+		
+		if (personaje == null) {
+			throw new PersonajeNullException("The character is null");
+		}
+		
 		return this.personajeRepository.save(personaje);
 	}
 
