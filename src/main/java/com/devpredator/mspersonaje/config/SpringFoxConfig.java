@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -29,6 +30,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  * @version v1.0 02/08/2021
  */
 @Configuration
+@Profile(value = {"dev", "prod", "uat"})
 public class SpringFoxConfig {
 
 	/**
